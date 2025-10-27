@@ -72,6 +72,7 @@ const DEFAULT_VIDEOS = [
 
 let grid = null;
 let videos = [];
+let presets = [];
 
 // Extract YouTube video ID from URL
 function getYouTubeId(url) {
@@ -94,6 +95,123 @@ function loadVideos() {
 // Save videos to localStorage
 function saveVideos() {
   localStorage.setItem('spacex-videos', JSON.stringify(videos));
+}
+
+// Load presets from localStorage
+function loadPresets() {
+  const saved = localStorage.getItem('spacex-presets');
+  if (saved) {
+    presets = JSON.parse(saved);
+  } else {
+    presets = [];
+  }
+}
+
+// Save presets to localStorage
+function savePresets() {
+  localStorage.setItem('spacex-presets', JSON.stringify(presets));
+}
+
+// Save current layout as a preset
+function saveLayoutPreset(name) {
+  if (!grid) return false;
+
+  // Get current grid items and their layout data
+  const items = grid.getGridItems();
+  const layout = Array.from(items).map((item) => {
+    // GridStack stores node data in the element itself
+    const gsX = parseInt(item.getAttribute('gs-x')) || 0;
+    const gsY = parseInt(item.getAttribute('gs-y')) || 0;
+    const gsW = parseInt(item.getAttribute('gs-w')) || 4;
+    const gsH = parseInt(item.getAttribute('gs-h')) || 1;
+
+    return {
+      videoId: item.getAttribute('data-video-id'),
+      x: gsX,
+      y: gsY,
+      w: gsW,
+      h: gsH,
+    };
+  });
+
+  const preset = {
+    id: 'preset-' + Date.now(),
+    name: name,
+    layout: layout,
+    enabledVideos: videos.filter((v) => v.enabled).map((v) => v.id),
+    timestamp: new Date().toISOString(),
+  };
+
+  presets.push(preset);
+  savePresets();
+  return true;
+}
+
+// Load a preset layout
+function loadLayoutPreset(presetId) {
+  const preset = presets.find((p) => p.id === presetId);
+  if (!preset || !grid) {
+    console.error('Preset not found or grid not initialized');
+    return false;
+  }
+
+  console.log('Loading preset:', preset.name, preset);
+
+  try {
+    // First, update which videos are enabled
+    videos.forEach((video) => {
+      video.enabled = preset.enabledVideos.includes(video.id);
+    });
+    saveVideos();
+    renderVideoList();
+
+    // Clear the grid
+    grid.removeAll();
+
+    // Add videos in the saved positions
+    preset.layout.forEach((layoutItem) => {
+      const video = videos.find((v) => v.id === layoutItem.videoId);
+      if (video && video.enabled) {
+        const videoHTML = createVideoItem(video);
+        if (videoHTML) {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = videoHTML.trim();
+          const newItem = tempDiv.firstChild;
+
+          // Add with specific position and size
+          grid.addWidget(newItem, {
+            x: layoutItem.x,
+            y: layoutItem.y,
+            w: layoutItem.w,
+            h: layoutItem.h,
+          });
+        }
+      }
+    });
+
+    console.log('✅ Preset loaded successfully:', preset.name);
+
+    // Auto-close the video manager
+    const manager = document.getElementById('videoManager');
+    if (manager) {
+      manager.classList.remove('open');
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error loading preset:', error);
+    alert('Error loading preset: ' + error.message);
+    return false;
+  }
+}
+
+// Delete a preset
+function deletePreset(presetId) {
+  if (confirm('Are you sure you want to delete this preset?')) {
+    presets = presets.filter((p) => p.id !== presetId);
+    savePresets();
+    renderPresetList();
+  }
 }
 
 // Create video grid item HTML
@@ -197,6 +315,36 @@ function initializeGrid() {
   console.log('GridStack initialized with', enabledVideos.length, 'videos');
 }
 
+// Render preset list in manager
+function renderPresetList() {
+  const presetList = document.getElementById('presetList');
+  if (!presetList) return;
+
+  if (presets.length === 0) {
+    presetList.innerHTML =
+      '<p style="color: #666; font-size: 12px; text-align: center; margin: 10px 0;">No saved presets yet</p>';
+    return;
+  }
+
+  presetList.innerHTML = presets
+    .map((preset) => {
+      const date = new Date(preset.timestamp).toLocaleString();
+      return `
+      <div class="preset-item">
+        <div class="preset-info">
+          <div class="preset-name">${preset.name}</div>
+          <div class="preset-date">${date}</div>
+        </div>
+        <div class="preset-actions">
+          <button class="load-btn" onclick="loadLayoutPreset('${preset.id}')">Load</button>
+          <button class="delete-btn" onclick="deletePreset('${preset.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+    })
+    .join('');
+}
+
 // Render video list in manager
 function renderVideoList() {
   const videoList = document.getElementById('videoList');
@@ -263,12 +411,16 @@ function addVideo(name, url) {
 // Make functions globally available
 window.toggleVideo = toggleVideo;
 window.deleteVideo = deleteVideo;
+window.loadLayoutPreset = loadLayoutPreset;
+window.deletePreset = deletePreset;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function () {
   loadVideos();
+  loadPresets();
   initializeGrid();
   renderVideoList();
+  renderPresetList();
 
   // Toggle manager visibility
   const toggleBtn = document.getElementById('toggleManager');
@@ -296,6 +448,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Save layout preset form
+  const savePresetForm = document.getElementById('savePresetForm');
+  if (savePresetForm) {
+    savePresetForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('presetName').value.trim();
+
+      if (name && saveLayoutPreset(name)) {
+        renderPresetList();
+        savePresetForm.reset();
+        alert('Layout preset saved successfully!');
+      } else {
+        alert('Failed to save preset. Make sure you have videos in the grid.');
+      }
+    });
+  }
+
   // Close manager when clicking outside
   document.addEventListener('click', (e) => {
     if (
@@ -303,6 +472,13 @@ document.addEventListener('DOMContentLoaded', function () {
       !toggleBtn.contains(e.target) &&
       manager.classList.contains('open')
     ) {
+      manager.classList.remove('open');
+    }
+  });
+
+  // Close manager when pressing Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && manager.classList.contains('open')) {
       manager.classList.remove('open');
     }
   });
