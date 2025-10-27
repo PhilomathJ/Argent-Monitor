@@ -1,0 +1,23 @@
+services:
+    dashboard-server:
+        image: spacex-dashboard
+
+        # Build context is the current directory (where Dockerfile is not needed!)
+        build:
+            context: .
+            dockerfile: Dockerfile
+
+        # Name the container
+        container_name: spacex-monitor
+
+        # Map container port 8080 to host port 8080
+        ports:
+            - '8080:8080'
+
+        # Map the local public directory to the container.
+        # This allows instant updates to index.html without a full rebuild.
+        volumes:
+            - ./public:/usr/src/app/public
+
+        # Set the restart policy to keep the dashboard running
+        restart: always
