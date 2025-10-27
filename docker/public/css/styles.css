@@ -1,0 +1,116 @@
+/* SpaceX Live Cams Dashboard Styles */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0a0a0a;
+  font-family: Arial, sans-serif;
+}
+
+.grid-stack {
+  background: #0a0a0a;
+  padding: 10px;
+  min-height: 100vh;
+}
+
+/* Grid Item Styling */
+.grid-stack-item {
+  background: #1a1a1a;
+  border-radius: 4px;
+  border: 2px solid #333;
+}
+
+.grid-stack-item:hover {
+  border-color: #666;
+}
+
+/* Show when dragging */
+.grid-stack-item.ui-draggable-dragging {
+  opacity: 0.8;
+  border-color: #0d6efd !important;
+  z-index: 1000;
+}
+
+/* Placeholder styling */
+.grid-stack-placeholder > .placeholder-content {
+  background-color: rgba(13, 110, 253, 0.3) !important;
+  border: 2px dashed #0d6efd !important;
+}
+
+.grid-stack-item-content {
+  background: #1a1a1a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Video Container */
+.video-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: grab;
+}
+
+.video-wrapper:active {
+  cursor: grabbing;
+}
+
+/* Video Title Overlay - Hidden by default */
+.video-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 40, 40, 0.92);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+  user-select: none;
+  padding: 20px;
+}
+
+.grid-stack-item:hover .video-title {
+  opacity: 1;
+}
+
+/* Video Embed Container */
+.video-embed {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  min-height: 200px;
+}
+
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  pointer-events: auto;
+}
+
+/* Resize Handles */
+.ui-resizable-handle {
+  background-color: rgba(13, 110, 253, 0.5);
+  opacity: 0.7;
+}
+
+.ui-resizable-se {
+  width: 12px !important;
+  height: 12px !important;
+  background-color: #0d6efd !important;
+  border-radius: 2px;
+}

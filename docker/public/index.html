@@ -2,101 +2,135 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>SpaceX Monitor 4</title>
-    <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        background-color: #000;
-      }
-      #video-grid {
-        display: grid;
-        width: 100vw;
-        height: 100vh;
-        /* A 3x3 grid for 7 videos maximizes video size */
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-        gap: 2px;
-      }
-      .video-container {
-        width: 100%;
-        height: 100%;
-      }
-      iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpaceX Live Cams</title>
+    <link rel="stylesheet" href="./js/gridstack.min.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <div id="video-grid">
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/tS2PHJmvJzo"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+    <div
+      id="shield-warning"
+      style="
+        display: none;
+        background: #ff6b00;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+      "
+    >
+      ⚠️ Brave Shields is blocking YouTube videos. Click the Brave icon in the
+      address bar and disable Shields for this site.
+    </div>
+
+    <div class="grid-stack">
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="0" gs-y="0">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">Rover 2 Cam</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/tS2PHJmvJzo?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/mhJRzQsLZGg"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="4" gs-y="0">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">NSF Live</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/mhJRzQsLZGg?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/inCQ49QGmqQ"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="8" gs-y="0">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">Rover Cam</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/inCQ49QGmqQ?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/1_XLpEKtW8Y"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="0" gs-y="1">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">Lab Cam</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/1_XLpEKtW8Y?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/bK-ToXIW7Uw"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="4" gs-y="1">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">Multiplex Cam</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/bK-ToXIW7Uw?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/IQV0DlS1Ew0"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="8" gs-y="1">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">Sentinel Cam</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/IQV0DlS1Ew0?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/oOj_x6H74mA"
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        >
-        </iframe>
+
+      <div class="grid-stack-item" gs-w="4" gs-h="1" gs-x="0" gs-y="2">
+        <div class="grid-stack-item-content">
+          <div class="video-wrapper">
+            <div class="video-title">Nerdle Cam</div>
+            <div class="video-embed">
+              <iframe
+                src="https://www.youtube.com/embed/oOj_x6H74mA?autoplay=0&mute=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <script src="./js/gridstack-all.js"></script>
+    <script src="./js/app.js"></script>
   </body>
 </html>
