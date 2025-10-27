@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Video Dashboard</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden; /* Hides scrollbars */
+        background-color: #000;
+      }
+      #video-grid {
+        display: grid;
+        width: 100vw; /* 100% of viewport width */
+        height: 100vh; /* 100% of viewport height */
+        /* This creates a 4-column, 2-row grid for 8 slots */
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 2px; /* A small gap between videos */
+      }
+      .video-container {
+        width: 100%;
+        height: 100%;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="video-grid">
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/watch?v=tS2PHJmvJzo?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/live/mhJRzQsLZGg?si=44T08Kjv2ZObxX6s?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/watch?v=inCQ49QGmqQ?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/watch?v=1_XLpEKtW8Y?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/watch?v=bK-ToXIW7Uw?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/watch?v=IQV0DlS1Ew0?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/watch?v=oOj_x6H74mA?autoplay=1&mute=1"
+          allow="autoplay; encrypted-media"
+        ></iframe>
+      </div>
+    </div>
+  </body>
+</html>
