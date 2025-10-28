@@ -71,7 +71,6 @@ const DEFAULT_VIDEOS = [
 let grid = null;
 let videos = [];
 let presets = [];
-let clockInterval = null;
 
 // Default settings
 let settings = {
@@ -138,76 +137,6 @@ function loadSettings() {
 function saveSettings() {
   localStorage.setItem('argent-settings', JSON.stringify(settings));
   console.log('💾 Saved settings to localStorage');
-}
-
-// Update clock display
-function updateClock() {
-  const clockElement = document.getElementById('toolbarClock');
-  if (!clockElement) return;
-
-  const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes();
-
-  let timeString;
-  if (settings.use24Hour) {
-    // 24-hour format
-    timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
-      2,
-      '0',
-    )}`;
-  } else {
-    // 12-hour format with AM/PM
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
-      2,
-      '0',
-    )} ${ampm}`;
-  }
-
-  clockElement.textContent = timeString;
-}
-
-// Start clock
-function startClock() {
-  if (clockInterval) {
-    clearInterval(clockInterval);
-  }
-  updateClock(); // Update immediately
-  clockInterval = setInterval(updateClock, 60000); // Update every minute
-}
-
-// Stop clock
-function stopClock() {
-  if (clockInterval) {
-    clearInterval(clockInterval);
-    clockInterval = null;
-  }
-}
-
-// Toggle clock visibility
-function toggleClock(show) {
-  const clockElement = document.getElementById('toolbarClock');
-  if (!clockElement) return;
-
-  if (show) {
-    clockElement.classList.remove('hidden');
-    startClock();
-  } else {
-    clockElement.classList.add('hidden');
-    stopClock();
-  }
-  settings.showClock = show;
-  saveSettings();
-}
-
-// Toggle 24-hour format
-function toggle24Hour(use24) {
-  settings.use24Hour = use24;
-  saveSettings();
-  updateClock();
 }
 
 // Save current layout as a preset
@@ -562,15 +491,8 @@ document.addEventListener('DOMContentLoaded', function () {
     use24HourCheckbox.checked = settings.use24Hour;
   }
 
-  // Start clock if enabled
-  if (settings.showClock) {
-    startClock();
-  } else {
-    const clockElement = document.getElementById('toolbarClock');
-    if (clockElement) {
-      clockElement.classList.add('hidden');
-    }
-  }
+  // Initialize clock from clock module
+  initializeClock(settings);
 
   // Load and display version from server
   fetch('/api/version')
@@ -634,13 +556,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Settings event listeners
   if (showClockCheckbox) {
     showClockCheckbox.addEventListener('change', (e) => {
-      toggleClock(e.target.checked);
+      toggleClock(e.target.checked, saveSettings);
     });
   }
 
   if (use24HourCheckbox) {
     use24HourCheckbox.addEventListener('change', (e) => {
-      toggle24Hour(e.target.checked);
+      toggle24Hour(e.target.checked, saveSettings);
     });
   }
 
@@ -648,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const clockElement = document.getElementById('toolbarClock');
   if (clockElement) {
     clockElement.addEventListener('click', () => {
-      toggle24Hour(!settings.use24Hour);
+      toggle24Hour(!settings.use24Hour, saveSettings);
       // Update checkbox to match
       if (use24HourCheckbox) {
         use24HourCheckbox.checked = settings.use24Hour;
