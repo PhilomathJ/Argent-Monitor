@@ -633,6 +633,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Click clock to toggle format
+  const clockElement = document.getElementById('toolbarClock');
+  if (clockElement) {
+    clockElement.addEventListener('click', () => {
+      toggle24Hour(!settings.use24Hour);
+      // Update checkbox to match
+      if (use24HourCheckbox) {
+        use24HourCheckbox.checked = settings.use24Hour;
+      }
+    });
+  }
+
   // Close manager when clicking outside
   document.addEventListener('click', (e) => {
     if (
