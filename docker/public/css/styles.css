@@ -384,6 +384,26 @@ iframe {
   text-shadow: 0 0 3px rgba(255, 69, 0, 0.3), 0 0 6px rgba(255, 69, 0, 0.2);
   padding-right: 4px;
   user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 4px 8px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.toolbar-version:hover {
+  color: #ff8c42;
+  text-shadow: 0 0 5px rgba(255, 69, 0, 0.6), 0 0 10px rgba(255, 69, 0, 0.4);
+  border-color: #8b4513;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 69, 19, 0.2),
+    rgba(255, 69, 0, 0.1)
+  );
+  box-shadow: 0 0 5px rgba(255, 69, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .toolbar-btn {

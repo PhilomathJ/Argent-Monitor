@@ -1,5 +1,3 @@
-// Argent Monitor - Multi-view Video Dashboard with GridStack
-
 // Default videos from the markdown file
 const DEFAULT_VIDEOS = [
   {

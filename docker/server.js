@@ -4,12 +4,12 @@ const app = express();
 const port = 8080;
 const packageJson = require('./package.json');
 
-// API endpoint to get version
+// API endpoint to get app version
 app.get('/api/version', (req, res) => {
   res.json({ version: packageJson.version });
 });
 
-// Serve static files (like index.html) from the 'public' directory
+// Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Fallback for the root path to ensure index.html is loaded
