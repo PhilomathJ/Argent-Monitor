@@ -73,6 +73,13 @@ const DEFAULT_VIDEOS = [
 let grid = null;
 let videos = [];
 let presets = [];
+let clockInterval = null;
+
+// Default settings
+let settings = {
+  showClock: true,
+  use24Hour: true,
+};
 
 // Extract YouTube video ID from URL
 function getYouTubeId(url) {
@@ -86,15 +93,18 @@ function loadVideos() {
   const saved = localStorage.getItem('argent-videos');
   if (saved) {
     videos = JSON.parse(saved);
+    console.log(`✅ Loaded ${videos.length} video(s) from localStorage`);
   } else {
     videos = [...DEFAULT_VIDEOS];
     saveVideos();
+    console.log('📦 Initialized with default videos');
   }
 }
 
 // Save videos to localStorage
 function saveVideos() {
   localStorage.setItem('argent-videos', JSON.stringify(videos));
+  console.log(`💾 Saved ${videos.length} video(s) to localStorage`);
 }
 
 // Load presets from localStorage
@@ -102,15 +112,104 @@ function loadPresets() {
   const saved = localStorage.getItem('argent-presets');
   if (saved) {
     presets = JSON.parse(saved);
-    console.log(`Loaded ${presets.length} preset(s) from storage`);
+    console.log(`✅ Loaded ${presets.length} preset(s) from localStorage`);
   } else {
     presets = [];
+    console.log('📦 No presets found, starting fresh');
   }
 }
 
 // Save presets to localStorage
 function savePresets() {
   localStorage.setItem('argent-presets', JSON.stringify(presets));
+  console.log(`💾 Saved ${presets.length} preset(s) to localStorage`);
+}
+
+// Load settings from localStorage
+function loadSettings() {
+  const saved = localStorage.getItem('argent-settings');
+  if (saved) {
+    settings = { ...settings, ...JSON.parse(saved) };
+    console.log('✅ Loaded settings from localStorage');
+  } else {
+    console.log('📦 Using default settings');
+  }
+}
+
+// Save settings to localStorage
+function saveSettings() {
+  localStorage.setItem('argent-settings', JSON.stringify(settings));
+  console.log('💾 Saved settings to localStorage');
+}
+
+// Update clock display
+function updateClock() {
+  const clockElement = document.getElementById('toolbarClock');
+  if (!clockElement) return;
+
+  const now = new Date();
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+
+  let timeString;
+  if (settings.use24Hour) {
+    // 24-hour format
+    timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
+      2,
+      '0',
+    )}`;
+  } else {
+    // 12-hour format with AM/PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
+      2,
+      '0',
+    )} ${ampm}`;
+  }
+
+  clockElement.textContent = timeString;
+}
+
+// Start clock
+function startClock() {
+  if (clockInterval) {
+    clearInterval(clockInterval);
+  }
+  updateClock(); // Update immediately
+  clockInterval = setInterval(updateClock, 60000); // Update every minute
+}
+
+// Stop clock
+function stopClock() {
+  if (clockInterval) {
+    clearInterval(clockInterval);
+    clockInterval = null;
+  }
+}
+
+// Toggle clock visibility
+function toggleClock(show) {
+  const clockElement = document.getElementById('toolbarClock');
+  if (!clockElement) return;
+
+  if (show) {
+    clockElement.classList.remove('hidden');
+    startClock();
+  } else {
+    clockElement.classList.add('hidden');
+    stopClock();
+  }
+  settings.showClock = show;
+  saveSettings();
+}
+
+// Toggle 24-hour format
+function toggle24Hour(use24) {
+  settings.use24Hour = use24;
+  saveSettings();
+  updateClock();
 }
 
 // Save current layout as a preset
@@ -444,11 +543,43 @@ window.deletePreset = deletePreset;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('🚀 Argent Monitor initializing...');
+  console.log('📍 Current URL:', window.location.href);
+
   loadVideos();
   loadPresets();
+  loadSettings();
   initializeGrid();
   renderVideoList();
   renderPresetList();
+
+  // Initialize clock
+  const showClockCheckbox = document.getElementById('showClock');
+  const use24HourCheckbox = document.getElementById('use24Hour');
+
+  if (showClockCheckbox) {
+    showClockCheckbox.checked = settings.showClock;
+  }
+  if (use24HourCheckbox) {
+    use24HourCheckbox.checked = settings.use24Hour;
+  }
+
+  // Start clock if enabled
+  if (settings.showClock) {
+    startClock();
+  } else {
+    const clockElement = document.getElementById('toolbarClock');
+    if (clockElement) {
+      clockElement.classList.add('hidden');
+    }
+  }
+
+  console.log('✨ Initialization complete');
+  console.log('💡 Tip: Your videos and presets are saved to localStorage');
+  console.log('💡 They will persist across normal refreshes (F5)');
+  console.log(
+    '⚠️  Hard refresh (Ctrl+Shift+R) may clear localStorage in some browsers',
+  );
 
   // Toggle manager visibility
   const toggleBtn = document.getElementById('toggleManager');
@@ -486,6 +617,19 @@ document.addEventListener('DOMContentLoaded', function () {
         renderPresetList();
         savePresetForm.reset();
       }
+    });
+  }
+
+  // Settings event listeners
+  if (showClockCheckbox) {
+    showClockCheckbox.addEventListener('change', (e) => {
+      toggleClock(e.target.checked);
+    });
+  }
+
+  if (use24HourCheckbox) {
+    use24HourCheckbox.addEventListener('change', (e) => {
+      toggle24Hour(e.target.checked);
     });
   }
 

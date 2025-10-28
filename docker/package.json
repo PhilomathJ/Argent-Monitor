@@ -1,6 +1,6 @@
 {
   "name": "argent-monitor-server",
-  "version": "0.1.8",
+  "version": "0.2.1",
   "description": "Argent Monitor - Multi-view video dashboard server",
   "main": "server.js",
   "scripts": {

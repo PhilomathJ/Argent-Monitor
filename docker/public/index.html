@@ -142,7 +142,11 @@
     <!-- Bottom Toolbar -->
     <div class="toolbar">
       <div class="toolbar-branding">ARGENT MONITOR</div>
-      <button class="toolbar-btn" id="toggleManager">📹 Manage Videos</button>
+      <button class="toolbar-btn" id="toggleManager">
+        <span class="vega-icon"></span>
+        MANAGE FEEDS
+      </button>
+      <div class="toolbar-clock" id="toolbarClock">00:00</div>
       <div class="toolbar-version">v0.1.8</div>
     </div>
 
@@ -187,6 +191,20 @@
             />
             <button type="submit">Save Current Layout</button>
           </form>
+        </div>
+
+        <div class="options-section">
+          <h4>⚙️ Options</h4>
+          <div class="options-list">
+            <div class="option-item">
+              <input type="checkbox" id="showClock" checked />
+              <label for="showClock">Show Clock</label>
+            </div>
+            <div class="option-item">
+              <input type="checkbox" id="use24Hour" />
+              <label for="use24Hour">24-Hour Format</label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
