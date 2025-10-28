@@ -1,4 +1,4 @@
-// SpaceX Live Cams Dashboard - GridStack Initialization with Video Manager
+// Argent Monitor - Multi-view Video Dashboard with GridStack
 
 // Default videos from the markdown file
 const DEFAULT_VIDEOS = [
@@ -83,7 +83,7 @@ function getYouTubeId(url) {
 
 // Load videos from localStorage or use defaults
 function loadVideos() {
-  const saved = localStorage.getItem('spacex-videos');
+  const saved = localStorage.getItem('argent-videos');
   if (saved) {
     videos = JSON.parse(saved);
   } else {
@@ -94,14 +94,15 @@ function loadVideos() {
 
 // Save videos to localStorage
 function saveVideos() {
-  localStorage.setItem('spacex-videos', JSON.stringify(videos));
+  localStorage.setItem('argent-videos', JSON.stringify(videos));
 }
 
 // Load presets from localStorage
 function loadPresets() {
-  const saved = localStorage.getItem('spacex-presets');
+  const saved = localStorage.getItem('argent-presets');
   if (saved) {
     presets = JSON.parse(saved);
+    console.log(`Loaded ${presets.length} preset(s) from storage`);
   } else {
     presets = [];
   }
@@ -109,12 +110,15 @@ function loadPresets() {
 
 // Save presets to localStorage
 function savePresets() {
-  localStorage.setItem('spacex-presets', JSON.stringify(presets));
+  localStorage.setItem('argent-presets', JSON.stringify(presets));
 }
 
 // Save current layout as a preset
 function saveLayoutPreset(name) {
-  if (!grid) return false;
+  if (!grid) {
+    console.error('Grid not initialized');
+    return false;
+  }
 
   // Get current grid items and their layout data
   const items = grid.getGridItems();
@@ -144,6 +148,7 @@ function saveLayoutPreset(name) {
 
   presets.push(preset);
   savePresets();
+  console.log(`Saved layout preset: "${name}"`);
   return true;
 }
 
@@ -155,7 +160,7 @@ function loadLayoutPreset(presetId) {
     return false;
   }
 
-  console.log('Loading preset:', preset.name, preset);
+  console.log(`Loading layout preset: "${preset.name}"`);
 
   try {
     // First, update which videos are enabled
@@ -220,10 +225,13 @@ function createVideoItem(video) {
   if (!videoId) return null;
 
   return `
-    <div class="grid-stack-item" data-video-id="${video.id}" gs-w="4" gs-h="1">
+    <div class="grid-stack-item" data-video-id="${video.id}" gs-w="4" gs-h="2">
       <div class="grid-stack-item-content">
         <div class="video-wrapper">
-          <div class="video-title">${video.name}</div>
+          <div class="video-title">
+            <span class="video-title-text">${video.name}</span>
+            <button class="video-close-btn" onclick="closeVideo('${video.id}', event)" title="Close video">×</button>
+          </div>
           <div class="video-embed">
             <iframe
               src="https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1"
@@ -266,8 +274,9 @@ function initializeGrid() {
     gridContainer.innerHTML = gridHTML;
 
     grid = GridStack.init({
-      cellHeight: 300,
-      margin: 8,
+      cellHeight: 150,
+      margin: 0,
+      column: 12,
       float: false,
       animate: true,
       disableOneColumnMode: true,
@@ -280,6 +289,9 @@ function initializeGrid() {
         scroll: false,
       },
     });
+
+    // No need for 24-column class
+    gridContainer.classList.remove('grid-stack-24');
   } else {
     // Grid already exists, update items
     // Get current items in the grid
@@ -318,7 +330,10 @@ function initializeGrid() {
 // Render preset list in manager
 function renderPresetList() {
   const presetList = document.getElementById('presetList');
-  if (!presetList) return;
+  if (!presetList) {
+    console.error('presetList element not found!');
+    return;
+  }
 
   if (presets.length === 0) {
     presetList.innerHTML =
@@ -376,21 +391,33 @@ function toggleVideo(videoId) {
   }
 }
 
+// Close video from the X button
+function closeVideo(videoId, event) {
+  if (event) {
+    event.stopPropagation(); // Prevent drag from triggering
+  }
+  const video = videos.find((v) => v.id === videoId);
+  if (video) {
+    video.enabled = false;
+    saveVideos();
+    renderVideoList(); // Update checkboxes in manager
+    initializeGrid(); // Remove from grid
+  }
+}
+
 // Delete custom video
 function deleteVideo(videoId) {
-  if (confirm('Are you sure you want to delete this video?')) {
-    videos = videos.filter((v) => v.id !== videoId);
-    saveVideos();
-    renderVideoList();
-    initializeGrid();
-  }
+  videos = videos.filter((v) => v.id !== videoId);
+  saveVideos();
+  renderVideoList();
+  initializeGrid();
 }
 
 // Add new video
 function addVideo(name, url) {
   const videoId = getYouTubeId(url);
   if (!videoId) {
-    alert('Invalid YouTube URL. Please use a valid YouTube video link.');
+    console.error('Invalid YouTube URL:', url);
     return false;
   }
 
@@ -410,6 +437,7 @@ function addVideo(name, url) {
 
 // Make functions globally available
 window.toggleVideo = toggleVideo;
+window.closeVideo = closeVideo;
 window.deleteVideo = deleteVideo;
 window.loadLayoutPreset = loadLayoutPreset;
 window.deletePreset = deletePreset;
@@ -444,7 +472,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (addVideo(name, url)) {
       addForm.reset();
-      alert('Video added successfully!');
     }
   });
 
@@ -458,9 +485,6 @@ document.addEventListener('DOMContentLoaded', function () {
       if (name && saveLayoutPreset(name)) {
         renderPresetList();
         savePresetForm.reset();
-        alert('Layout preset saved successfully!');
-      } else {
-        alert('Failed to save preset. Make sure you have videos in the grid.');
       }
     });
   }

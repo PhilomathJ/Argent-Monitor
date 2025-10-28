@@ -1,6 +1,6 @@
 services:
     dashboard-server:
-        image: spacex-dashboard
+        image: argent-monitor
 
         # Build context is the current directory (where Dockerfile is not needed!)
         build:
@@ -8,7 +8,7 @@ services:
             dockerfile: Dockerfile
 
         # Name the container
-        container_name: spacex-monitor
+        container_name: argent-monitor
 
         # Map container port 8080 to host port 8080
         ports:

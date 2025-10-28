@@ -1,7 +1,7 @@
 {
-  "name": "youtube-dashboard-server",
-  "version": "1.0.0",
-  "description": "Simple Express server for YouTube dashboard",
+  "name": "argent-monitor-server",
+  "version": "0.1.8",
+  "description": "Argent Monitor - Multi-view video dashboard server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

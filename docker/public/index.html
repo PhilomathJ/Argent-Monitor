@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpaceX Live Cams</title>
+    <title>Argent Monitor</title>
     <link rel="stylesheet" href="./js/gridstack.min.css" />
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
@@ -141,47 +141,53 @@
 
     <!-- Bottom Toolbar -->
     <div class="toolbar">
+      <div class="toolbar-branding">ARGENT MONITOR</div>
       <button class="toolbar-btn" id="toggleManager">📹 Manage Videos</button>
+      <div class="toolbar-version">v0.1.8</div>
     </div>
 
     <!-- Video Manager Modal -->
     <div class="video-manager" id="videoManager">
-      <button class="close-manager" id="closeManager">×</button>
-      <h3>Video Manager</h3>
-
-      <div class="video-list" id="videoList"></div>
-
-      <div class="add-video-section">
-        <h4>➕ Add New Video</h4>
-        <form class="add-video-form" id="addVideoForm">
-          <input
-            type="text"
-            id="videoName"
-            placeholder="Video Name (e.g., 'My Camera')"
-            required
-          />
-          <input
-            type="text"
-            id="videoUrl"
-            placeholder="YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
-            required
-          />
-          <button type="submit">Add Video</button>
-        </form>
+      <div class="video-manager-header">
+        <button class="close-manager" id="closeManager">×</button>
+        <h3>Video Manager</h3>
       </div>
 
-      <div class="preset-section">
-        <h4>💾 Layout Presets</h4>
-        <div class="preset-list" id="presetList"></div>
-        <form class="save-preset-form" id="savePresetForm">
-          <input
-            type="text"
-            id="presetName"
-            placeholder="Preset Name (e.g., 'Default Layout')"
-            required
-          />
-          <button type="submit">Save Current Layout</button>
-        </form>
+      <div class="video-manager-content">
+        <div class="video-list" id="videoList"></div>
+
+        <div class="add-video-section">
+          <h4>➕ Add New Video</h4>
+          <form class="add-video-form" id="addVideoForm">
+            <input
+              type="text"
+              id="videoName"
+              placeholder="Video Name (e.g., 'My Camera')"
+              required
+            />
+            <input
+              type="text"
+              id="videoUrl"
+              placeholder="YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
+              required
+            />
+            <button type="submit">Add Video</button>
+          </form>
+        </div>
+
+        <div class="preset-section">
+          <h4>💾 Layout Presets</h4>
+          <div class="preset-list" id="presetList"></div>
+          <form class="save-preset-form" id="savePresetForm">
+            <input
+              type="text"
+              id="presetName"
+              placeholder="Preset Name (e.g., 'Default Layout')"
+              required
+            />
+            <button type="submit">Save Current Layout</button>
+          </form>
+        </div>
       </div>
     </div>
 
