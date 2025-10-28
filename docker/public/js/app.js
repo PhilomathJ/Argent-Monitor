@@ -574,6 +574,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // Load and display version from server
+  fetch('/api/version')
+    .then((response) => response.json())
+    .then((data) => {
+      const versionElement = document.querySelector('.toolbar-version');
+      if (versionElement && data.version) {
+        versionElement.textContent = `v${data.version}`;
+      }
+    })
+    .catch((err) => {
+      console.warn('Could not load version:', err);
+    });
+
   console.log('✨ Initialization complete');
   console.log('💡 Tip: Your videos and presets are saved to localStorage');
   console.log('💡 They will persist across normal refreshes (F5)');
