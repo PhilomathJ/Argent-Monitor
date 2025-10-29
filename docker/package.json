@@ -1,5 +1,9 @@
 {
   "name": "argent-monitor-server",
+  "author": {
+    "name": "Jeremy Fairbanks",
+    "email": "philomathj@proton.me"
+  },
   "version": "0.2.2",
   "description": "Argent Monitor - Multi-view video dashboard server",
   "main": "server.js",
