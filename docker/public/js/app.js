@@ -260,7 +260,7 @@ function createVideoItem(video) {
           </div>
           <div class="video-embed">
             <iframe
-              src="https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1"
+              src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&modestbranding=1"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
             ></iframe>
@@ -396,11 +396,10 @@ function renderVideoList() {
       <input type="checkbox" id="${video.id}" ${video.enabled ? 'checked' : ''}
              onchange="toggleVideo('${video.id}')">
       <label for="${video.id}">${video.name}</label>
-      ${
-        !DEFAULT_VIDEOS.find((v) => v.id === video.id)
+      ${!DEFAULT_VIDEOS.find((v) => v.id === video.id)
           ? `<button class="delete-btn" onclick="deleteVideo('${video.id}')">Delete</button>`
           : ''
-      }
+        }
     </div>
   `,
     )
@@ -461,6 +460,29 @@ function addVideo(name, url) {
   return true;
 }
 
+// Set up staggered auto-refresh to prevent Chromium OOM crashes
+function setupAutoRefresh() {
+  const REFRESH_INTERVAL = 2 * 60 * 60 * 1000; // 2 hours
+  const STAGGER_DELAY = 5000; // 5 seconds
+
+  setInterval(() => {
+    console.log('🔄 Initiating scheduled auto-refresh of videos to free memory...');
+    const iframes = document.querySelectorAll('.video-embed iframe');
+    
+    iframes.forEach((iframe, index) => {
+      setTimeout(() => {
+        console.log(`Refreshing video ${index + 1}/${iframes.length}...`);
+        const currentSrc = iframe.src;
+        // Temporarily clear src to force garbage collection
+        iframe.src = 'about:blank';
+        setTimeout(() => {
+          iframe.src = currentSrc;
+        }, 100);
+      }, index * STAGGER_DELAY);
+    });
+  }, REFRESH_INTERVAL);
+}
+
 // Make functions globally available
 window.toggleVideo = toggleVideo;
 window.closeVideo = closeVideo;
@@ -513,6 +535,9 @@ document.addEventListener('DOMContentLoaded', function () {
   console.log(
     '⚠️  Hard refresh (Ctrl+Shift+R) may clear localStorage in some browsers',
   );
+
+  // Start the background refresher
+  setupAutoRefresh();
 
   // Toggle manager visibility
   const toggleBtn = document.getElementById('toggleManager');
